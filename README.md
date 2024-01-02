@@ -3,7 +3,7 @@ Establishing Connection between server and client using Socket addressing for Fi
 
 # STEPS TO EXECUTE :
 
-* Run the TCPServer.java first then run FileReader.java
+* Run the FileReader.java
 * For Server IP give localhost or 127.0.0.1
 * Enter the Port no. say 3000
 * Give the appropriate file(.txt) location in file path
