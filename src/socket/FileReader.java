@@ -73,19 +73,35 @@ public class FileReader extends JFrame implements ActionListener {
 
 
     public void actionPerformed (ActionEvent e){
-        String modifiedSentence;
+        
 
         try {
+        	// Creating socket for client
             clientSocket = new Socket(ipTextField.getText(),Integer.parseInt(portTextField.getText()));
 
             writer = new PrintWriter(clientSocket.getOutputStream(), true);
             inFromServer = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+            
+            // Abstracting the filepath
             String Filepath = pathTextField.getText();
 
+            //Send the filepath to server
             writer.println(Filepath);
-            modifiedSentence = inFromServer.readLine();
-            resultTextArea.setText(modifiedSentence);
+
+
+            // Reading the response from the server
+            String data;
+            StringBuilder response = new StringBuilder();
+            while ((data =  inFromServer.readLine()) != null) {
+                response.append(data + "\n");
+            }
+            //Showing in the jframe
+            resultTextArea.setText(response.toString());
+            
             clientSocket.close();
+            inFromServer.close();
+            writer.close();
+            
           
         } catch (IOException ex) {
             throw new RuntimeException(ex);
