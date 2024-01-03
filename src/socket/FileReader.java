@@ -11,6 +11,8 @@ public class FileReader extends JFrame implements ActionListener {
 
     Socket clientSocket;
     OutputStream outToServer;
+    PrintWriter writer;
+    
     BufferedReader inFromServer;
     private JLabel ipLabel, portLabel, fileLabel;
     private JTextField ipTextField, portTextField, pathTextField;
@@ -69,36 +71,22 @@ public class FileReader extends JFrame implements ActionListener {
         tserver.start();
     }
 
-    private static String readFileContents(String filePath) {
-        StringBuilder content = new StringBuilder();
-        File file = new File(filePath);
-        if (!file.exists() || !file.isFile()) {
-            return "Invalid path or file does not exist.";
-        }
-        try {
-            Scanner sc = new Scanner(file);
-            while (sc.hasNextLine()){
-                content.append(sc.nextLine()+" ");
-            }
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
-        }
-        return content.toString();
-    }
-
 
     public void actionPerformed (ActionEvent e){
         String modifiedSentence;
 
         try {
             clientSocket = new Socket(ipTextField.getText(),Integer.parseInt(portTextField.getText()));
-            outToServer = clientSocket.getOutputStream();
+
+            writer = new PrintWriter(clientSocket.getOutputStream(), true);
             inFromServer = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-            String data = readFileContents(pathTextField.getText());
-            outToServer.write((data+"\n").getBytes());
+            String Filepath = pathTextField.getText();
+
+            writer.println(Filepath);
             modifiedSentence = inFromServer.readLine();
             resultTextArea.setText(modifiedSentence);
             clientSocket.close();
+          
         } catch (IOException ex) {
             throw new RuntimeException(ex);
         }
